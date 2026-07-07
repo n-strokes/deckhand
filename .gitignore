@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Deckhand runtime artifacts (change log + comments the server writes per project)
+.annotate/
