@@ -4,6 +4,8 @@ Turn Chrome into a PowerPoint-style editor for any HTML page, and write every ed
 
 A browser can show HTML, but it cannot save changes back to disk. Deckhand adds the save half. A small local Python server (standard library only, nothing to install) serves your project and adds an editing layer to any `.html` file. You turn the editor on, then select, drag, resize, retype, format, add shapes, align, restack, and reorder slides. Each edit is written back into the real `.html` source right away. When you stop, the file is already done. There is no separate export or apply step.
 
+This repo also ships a companion skill, `html-slide-deck`, for building the decks you edit. See "Companion skill" below.
+
 ## Why it is different
 
 Most visual editors write the whole page back to disk at once. That reorders attributes, drops comments, collapses whitespace, and bakes in the editor's own markup, so clean source turns to junk. Deckhand does not do that. It edits by exact character position and changes only the bytes that need to change.
@@ -18,7 +20,7 @@ If an edit's element cannot be found in the source, the server changes nothing a
 
 ## Requirements
 
-- Python 3 (standard library only)
+- Python 3 (standard library only for the editor)
 - Google Chrome, or any Chromium browser
 
 ## Quick start
@@ -52,6 +54,18 @@ Tier 1 works anywhere. Text editing, text formatting, and drag or resize on any 
 
 Tier 2 needs a positioning frame. The geometry tools (align, distribute, z-order, exact position) only mean something when shapes sit at absolute positions in a known coordinate frame. Those tools appear only when the selection is inside a `.slide`, `#stage`, or `[data-ppt-stage]` element. A fixed slide stage, for example `section.slide` at 1280x720, is such a frame.
 
+## Companion skill: html-slide-deck
+
+Deckhand edits HTML, so you need good HTML to edit. The `html-slide-deck/` folder builds decks as one self-contained HTML file: each slide a fixed 16:9 `<section class="slide">`, paged by on-screen nav, styled to a clean standard. It authors decks that edit cleanly in deckhand, and it exports the finished deck to PowerPoint.
+
+The loop the two skills form:
+
+1. Build or import a deck as HTML with `html-slide-deck`.
+2. Edit it visually in the browser with deckhand. Every change lands in the HTML source.
+3. Export to `.pptx` when you are done. Quick mode drops one full-bleed screenshot per slide (needs `python-pptx`). Full mode rebuilds native PowerPoint objects from the live HTML.
+
+See `html-slide-deck/SKILL.md` for deck conventions, export modes, and setup. The export step needs `python-pptx`; the editor itself does not.
+
 ## Known limits
 
 - The first edit of an element with no id, inside JavaScript-drawn SVG or a browser-inserted `<tbody>`, can fail to locate. The editor warns and keeps that edit on screen only. Once an element is touched it gets a stable handle and is reliable after that.
@@ -59,15 +73,12 @@ Tier 2 needs a positioning frame. The geometry tools (align, distribute, z-order
 - Writing pixel positions onto responsive content freezes how it responds. This is fine on a fixed slide stage and less so elsewhere.
 - Animations and transitions, slide masters, WordArt fidelity, and editing charts are out of scope.
 
-## Files
+## What is in this repo
 
 - `editor_server.py` is the local server and the source-write engine.
 - `editor_overlay.js` is the browser editing layer that gets added to served pages.
-- `SKILL.md` is the full design spec and endpoint reference.
-
-## Optional companions
-
-The core is self-contained. Two features point to companion tools if you use them: comments (an annotate-style server) and export to `.pptx` (a build-from-HTML step). Neither is needed to edit pages.
+- `SKILL.md` is deckhand's full design spec and endpoint reference.
+- `html-slide-deck/` is the companion skill for building and exporting decks.
 
 ## License
 
