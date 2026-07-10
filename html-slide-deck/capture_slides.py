@@ -9,7 +9,7 @@ Usage:
     python3 capture_slides.py DECK.html [--out DIR] [--slides 0,2,5] [--scale 2]
 
 DECK.html is a path relative to the project root (the cwd you run this from),
-e.g. example-deck/deck.html . Output defaults to <deck-dir>/shots/.
+e.g. a path like slides/deck.html . Output defaults to <deck-dir>/shots/.
 
 The deck must expose a global show(i) that activates the i-th `.slide` section
 (the standard deck-nav convention) - that is how we page between slides.

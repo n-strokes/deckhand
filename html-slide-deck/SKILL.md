@@ -10,15 +10,10 @@ fixed-size `<section class="slide">`, paged by an on-screen nav, styled to a cle
 standard so it reads like a real deck and exports cleanly. HTML is the fast
 medium: edit, preview in the browser, screenshot, and when asked, render to `.pptx`.
 
-> **Reference build — PLACEHOLDER (set on first use).**
-> The original author's canonical example was `example-deck/deck.html`
-> (1085 lines, 11 slides). **That file is NOT present on this machine.** Do not try to read it.
-> The first time you use this skill, do ONE of the following and record it here:
->   1. Point this at the user's own canonical deck (replace this block with its path), or
->   2. Author a fresh deck from the conventions below — they are fully self-contained and
->      need no reference file.
-> Until a real reference exists, treat the "Deck file conventions" section below as the
-> single source of truth for structure.
+> **No bundled reference deck.**
+> This skill ships no example deck. Author a fresh deck from the conventions below (they are
+> fully self-contained and need no reference file), or point it at your own deck. Treat the
+> "Deck file conventions" section below as the single source of truth for structure.
 
 > **Platform note (macOS).** This skill was authored on Windows (PowerPoint COM, win32com,
 > Windows Chrome paths) and has been adapted for macOS. `capture_slides.py` now probes the

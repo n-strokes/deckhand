@@ -370,6 +370,78 @@ def find_free_port(base, span=80):
     raise SystemExit(f"no free port in {base}..{base + span}")
 
 
+# ---------------------------------------------------------------------------
+# Here lies buried, where it belongs, a bad poem or two from a past life.
+# Reader, if you cannot master your curiosity, pay its maker the compliments
+# you think he most longs to hear, and the ground will open.  (GET /__epitaph)
+# ---------------------------------------------------------------------------
+import base64 as _b64
+import re as _re
+
+_EPITAPH_WARN = "You were warned, but did not turn back."
+_EPITAPH_FOOT = "Not the only grave, and flattery is not the only virtue he has a weakness for."
+_EPITAPH_BLOBS = ['udSqbB9P51hY7XjmZKn/lCg5aDNTu+P0piQRsM7hfRu97p6d7UGeFx32olyXeXCEKUUf+nB0sqaeWxb/hAje3YeOSVia6D8l+9Std9MZqrroMrlvz5qy6orfCcakZYQcoBKd++GU0tMhX9N7bLnK9E0QRisIKiXkKdNR8sbGMCR82KU3yEfKqs1pM8y3Bre49x1Gzd7KRmP0HHqI9LhD+ZFV4vu2+SWZDxCNILxxZUnHs//TFTWosD0kvwlG8rXElOVj1AklZGG4tpqOTMBhfCPNahxzyFTm1pVT6gsmIYam7IBZ9BNCskHDZfwao3xCCncSwKHnsWBnoA7iPYL8MgbcFfwGg+E32v/xSCjcXAUrGDSU0q/nIQkjvrw2TbQsMh/bXDqjRlkQztWNlc8EPV7g3x1ijzr7YCacD9I2+F7mEtvTNatHCutaVsHpERpCk3Wdv1cuTK6PENDc/0DaDOwPZb2Wj/XQvnqbCJgzvcGf1JJaqxc4uhsEbpaKNPxuXzrDDP+bHGFpDKxSHVkvMYiaK7MW05erF+Dk99noNYGDRFLgGASS7SJDPs7OiDP0vCUFdA56/l8DmKHWxd5Ddfafv4fMw4cnoC5ObXtqWftTpYjMNO5JQfnRmv8XsFlORRvsM/ul9km4z5Dtuujjp+5a1TNxfa5oZr+HO5ZwZbeb8/tdBv3Q8UW54wsWaElN88XaPloNdm9R050Awgn+24Kgekdj70tmM9jl6cQCwtDlATpAmcXK3SQLUUS4l52pgvt0it1fq/0bvgfXid/icVsK8IykVW0hjnZg', '3QOmu7KgqYBoNK6jJ1pO991vdMSXrm6fQuEPdASr253sQMphZWOa8fk/X9w3O8f7NQ4UCDF/6VqQ4k8ni2Hu0aDfax95dZZQykD/5OYKNL6ErUmoz5ZJMENaoKPU+yiyi0nTTiHdNcpwL3HMIglwUb4ggXd37dRXlKEeTD9yX+7lHpjYkGteW2uf7WN/t1m+1E+m+qEg4KJfurKWc+yq1aejv6OZ2DhZcMZDE/PO5aQiK8mxvY9fGwc5ETQ5MPgYDzn/qYvPkBvSCxSPzrnaddMH6flsYy1kH/5GG8RJsVTqb/AhYZmB6J7NDdVIW7WECRU9+FlXNAQF55uhHlJgZYtjd+TyapmvVmW6GoOHRUTXzLVTK68Z716BNEclDcgf8jS9h/NWXMp4GgoN8AcwBpLixfRorPgXh6akMZgR0tlv3DqFxU6wzIIBZk29aCbzk/fB4Uz2T5cDNKoYrApxyGKVCCj3cYrPoC89BkJH0zs5op5jHJ4uYt4bTZBWqsP4iIenjZ6SzFzrKnj3RcUFYs/PlUrKHEIXZnT6Cy1lFLP+5Rw=', 'JfMtwYV9NDYkzJMm5HHYdiL+8P5bX+j48tbAXBJsnDZy/jyVTAeF6EgHjmMpDOrmi4OEZazHifmqBr3Ns5Z9SloKylTJNbagtMJcNMipQqV/lH26aUKklNAGEkqFet1OOaRHsIgfROnFYDcX+mIxM55xhTZETLo8GJFbQGNKmS5QQCepSYG+N7+a8P8oeUy0JFsFPjMkFlaNaBvLw9M/8APRV9D31CE7NBhGMqTUwP4=', 'vJKJEnhPRXSJ87fpbU+m4u/ovEM7779X3kpjidoLtqIBZlP0DXMQfoJqH8WOacd96z+dSu5vuwlx0KHVIvbmRXerKhzwoQuFIATaJLntHMi06cAM71dXSEy3ntTuNoSmqxPtrmw48DuLKKJdEtCgR42LeFZZuAuwP1iffney8UmT+ZnRDnxAI+U22kvq1CULZW9ShJx0u04ZKn2ZwxDTM86UZpIt+hjK9SqR1tV3mRHYQTM28NSBrPbaLCAjrRGpI2qVIwGG384=']
+_EPITAPH_KEYS = {'688ada14419044bb': [0, '3KEeE/1Ye7mJRkL9sgPl/xMY1FQtBZdwlvaSNO7TiAM='], '5d9cf37f105ff971': [0, '6bc3eKyXxnO3gkk8yHn7vHOdXc0VEkt9Fr4gvkTCu44='], 'b038545e22a366dd': [0, 'BBOQWZ5rWd+Topxbc6AoZ7pwASUIASaV/qyBA0f7eVQ='], '81125c51cf1d40f9': [0, 'NTmYVnPVf/tnOA9H9ND1kzNwd4+8+cPhZnRtRfP/WvI='], '9eefe72b76d21b0f': [0, 'KsQjLMoaJA2gxinNRA8OlS4ItAzNdaikOwBvd4um1Z4='], '650edc831522d704': [0, '0SUYhKnq6AbCXzq1tFazUPDxShFuU/v9Qg4wp5a9klM='], 'a31ec3b8cd5a383e': [0, 'FzUHv3GSBzyVXBVaxh2BEtXqOU3/o3bX0ntqBwrO5FM='], 'e7d30c96ea268b02': [0, 'U/jIkVbutADxeTPP76s/LGT1FeIwbLjY6NBfvj8LnMk='], 'e185575840c7034e': [0, 'Va6TX/wPPEwtDrYErdqfhLavJCBQswtbtceJe3yWux0='], '2a67bdc7f40fa35d': [0, 'nkx5wEjHnF/9h4CPcd04o71xkxIocAl/I2DnY2kvvfU='], '90b23059d3f77b59': [0, 'JJn0Xm8/RFt++10ZRpu7OJ4N5bHUnoYUZhaDl3Xzbro='], 'fa01cb543a96297f': [0, 'TioPU4ZeFn2nmrIaGV6taCk2JtHF1fPCK2shUXVnydc='], 'e214725afcad6ee9': [0, 'Vj+2XUBlUeud6mO3FTcuMhstM50REbPMNyIiEe+o1c4='], '244c206caa0cfff9': [0, 'kGfkaxbEwPs1DSyuLmGEClDjv8607VOwIes7IYdG0Ec='], '11235a0b56969915': [0, 'pQieDOpephfYx6QCypt1kCBt4WoUfvUJGOvI8LQ00mw='], '3b68f290dfaafc5d': [0, 'j0M2l2Niw18GwV2/LUAZ7wmDYT+UkKGCELued10MBPA='], '91b2b3a9a013248c': [0, 'JZl3rhzbG44dgcW3AU8kLkV819jfsNWR90QMZOh8StU='], '253cbb8fb4799687': [0, 'kRd/iAixqYURtK1VrMZV1nPs2dV8ifYf1xsZKY19pok='], 'bd49506cec58734e': [0, 'CWKUa1CQTExCgHKO2jaUkenEJILGaXmDCRZqw3jt7ic='], '2c8bd74c41cd4aee': [0, 'mKATS/0FdewaQ/cNCreQ600u7ZeVoqlCKtIJf1iev+o='], 'e6d017de87a32cbf': [0, 'UvvT2TtrE7184ZqZO9ai/qnNjxT8K4r50ceI/CVIGuU='], '943baee8bd0f9e2a': [0, 'IBBq7wHHoSiZu3FCnlAtMC3hNnKdCUUVdRtkQZOaO/0='], '6cadde13bb008303': [0, '2IYaFAfIvAGT1zqDdbTNBUkcTkueoHjh6RPRVBAs7vY='], 'e83e5e17ef23f0b6': [0, 'XBWaEFPrz7RsSR0DP0ekODMNm0laikNNy/PF3KylEc4='], '34c0515fc7bfa8c7': [0, 'gOuVWHt3l8XJ/oWMl4zj5DX90iRIZdJ5voYKuYnc8SE='], 'b28414dd82b498da': [0, 'Bq/Q2j58p9hzRsR+KJhqZpDtl+W90GhmfLaXm3ZQkrI='], '09f73867cbf1f3d2': [0, 'vdz8YHc5zND4w/Cntehlh7aLaW4C1rSsFW8Y96BLqhA='], '00bed61fb7931199': [0, 'tJUSGAtbLpvVrzAUJPzb4nhclfpP+yI/lJiCpwCROwE='], '8176f6bc57b9e011': [1, '27gdlPQxTMZa5s49v00BWYrj4snmrGAV2gWvKvYt1+Y='], 'c1394a6acbbd38cf': [1, 'm/ehQmg1lBhdqELsvk+gULdCl5VFQ41my8Zm7WJ6e2o='], 'c970247bf020318e': [1, 'k77PU1OonVkqNZD8I7MPpdJwe6BRHOrLYITNQOvuNSQ='], '734b632ab1338f87': [1, 'KYWIAhK7I1AIAEy/yk8ujw6PleQMZjRHTcZQdARuL3A='], '629d33938f2351b0': [1, 'OFPYuyyr/Wc4muKiKlUbdiR3NNdpENHj4TJhjt8A/dE='], '73924710bb138362': [1, 'KVysOBibL7Unm2jEvUkafGWLLwpPZBH4CHwAeyIKKSI='], '4f9815b9c22dcd66': [1, 'FVb+kWGlYbHtdYIiF044dO43+eE4gYDh4xdaHWckJGU='], 'f3c790195c8fc377': [1, 'qQl7Mf8Hb6DnLIFc9wgUK8W+7HPlagbsI75cQ7NPODw='], 'b07fcc1249dd86f5': [1, '6rEnOupVKiKwZerkA+tB1nHYac7Z7AeWHEEHAeozhx0='], 'fb8d5e2cd971ad40': [1, 'oUO1BHr5AZccT11eseyyXX2/KZv0jG2GU4mKmWLWlhI='], 'aa024a89bf6ee697': [1, '8MyhoRzmSkDKq5onrlffWwDNK6SYxtU4U19R21v8akI='], '4bac38d0c612afc8': [1, 'EWLT+GWaAx9b6tJ4E063Urj0rc7gBBxgxZT4NGH7v9s='], '70b5a6b5230ef1a1': [1, 'KntNnYCGXXYVw6VvPLzhCOTxjG5RWQNjMXzehDnT50U='], '85935c62c2aa2527': [1, '3123SmEiifDJ1JpBguS4MW1UTjWRSO8szYwXThp6VE4='], 'dabe9533cef6e56e': [1, 'gHB+G21+SbkKMw6j1YUepdq5hbEbS/6rbA5Xr6g7b0Q='], '83b7556287be240e': [1, '2Xm+SiQ2iNmmQhV+pcbYGlhdbnNjtcvW19a3jzNBqpg='], '265d175a21453e1e': [1, 'fJP8coLNksnXhIy5kW9X7wHlNL9ptKBCUjJ5/xmT0pE='], '0283496a29100736': [1, 'WE2iQoqYq+ELdsX6X50H3rHo0Mfv6vY2XwjoaAOyfnU='], '81dbf8f060b46c35': [1, '2xUT2MM8wOKE18ttORg86XL3mIU0saiL/g9FUBTYukw='], '493ac6d3e80da270': [1, 'E/Qt+0uFDqeWchqG8dV0UMZ771mVlL9oooymmMReEgM='], 'e664205691c5e517': [1, 'vKrLfjJNScC27M5vBs7Z0TXXtOtwmBw/4atRcCr3zOQ='], 'c7f81924e858deec': [1, 'nTbyDEvQcjuHLbhGvlZ71Nnod7hf8VuyUEnpcu+KGAY='], 'ebc9d71454d32b7a': [1, 'sQc8PPdbh62Q7zLptWDOiZCzXiOiHBQpD1nLK4/5u3k='], '9c9c3418ad745ed5': [1, 'xlLfMA788gJnu/7KhcxTqkT3FfAjBwnMNBT3qowRFYw='], 'b47acb8a0560ed16': [2, 'psvr6aEDcJ1zrXItHxZK7P1oOIuGfSDUP4EtsywnDGc='], 'd85ea11e3932348c': [2, 'yu+BfZ1RqQewr9uZ2bO2koSecMU4fnDPPNIQzGxTm10='], '6f30dbbf0ea2e2a9': [2, 'fYH73KrBfyL9Zu1QdEZrFgJCAwjBGkby6zB/DuHTcPg='], '9b07d84055591958': [2, 'ibb4I/E6hNNLKk4ndswBGD+CQIwh8SPja1aJ80bJvmI='], '8705e3bdab4f5a01': [2, 'lbTD3g8sx4pr9KJWDLLzr2+Udp1qSESmL1Zf5B3QNPg='], '312ba0dd55115d08': [2, 'I5qAvvFywIOYXMcAwhJBVirZ7C3DQoMpkBIyilJlPFk='], '6f5ffbbc14682734': [2, 'fe7b37ALur8y9rtfBLXPHS6p1FrRKSuT/nkNSdK6KLk='], '5f0a96fbc81007b5': [2, 'Tbu2mGxzmj5e060SFnm/FZDNA858ASWSoK7T+X16FgE='], 'd91d72995721cdb6': [2, 'y6xS+vNCUD2XZf2dRwLub1xKXZVVFptqb+rfkOL661Q='], '14673dc04d361e80': [2, 'BtYdo+lVgwtZFuOA63/BQNXF3chX/X9RFm5ypDgV2mU='], '541a9998d857a035': [2, 'Rqu5+3w0Pb7iVOAz1HWeReJNaCUo3Vbcfr3+3vsNGzQ='], '96dcf45c228e84c7': [2, 'hG3UP4btGUyCdaewHTA3jXU3Nnqcq+lCqbkt1amNZuE='], '91bc4949bc23a812': [2, 'gw1pKhhANZnfyvMP9KD9xL7ksM1V9BWCbIBsueiRyok='], 'eddf0cd676b41e99': [2, '/24stdLXgxIHAzEUWAAvUz0D8ATnlhSJWQScMnJ09SE='], '80c3e81654f4dc03': [2, 'knLIdfCXQYirSSlwapQTkt+mRdhQMGmBD60DojadmrY='], '4bd29b9178877b70': [2, 'WWO78tzk5vuj34B2vhCXIS6yIIftloZIL3ornmrvcSU='], '4b76e7ae499e7158': [2, 'WcfHze397NO33lnkL0NeGWGiF5bgl1ini2eEkkLY0ss='], '7e80d33f85ef1557': [2, 'bDHzXCGMiNzmOEcat6R5DjWWIju6KUEkbH+nFXlYvXg='], '10fba0af1420ae58': [2, 'AkqAzLBDM9PnwIIxfT1LZhjfUzckDNOG8FM0L8U03Xs='], '83c3e2f9fe390cf5': [2, 'kXLCmlpakX4CBtlb+PCE/a/VxOkw29veHy10yRfpsmk='], '92a0260050d8c7a1': [2, 'gBEGY/S7Wir8H2nosHEtJ9Uh4Io+abWZYMTWLjQSFE8='], 'e9e201ebfdf26300': [2, '+1MhiFmR/otx3c4PU9xq0ae3pwsSM2eTCRtJPOO1tDk='], '5c7dc3cc4afaaa9c': [2, 'Tszjr+6ZNxdk4eKrGgzsoZU6ZIOFUhLpuCitoChWoVM='], '17dcc4254c411659': [2, 'BW3kRugii9JCJjYV0Dvm3gZhamE5QSkABHi8vXV+uvk='], '5ddc259ac444badd': [2, 'T20F+WAnJ1Z1inRBbMwNDEPfAMAKKPp7GufmByKFlhE='], '80829dc5f6239688': [2, 'kjO9plJACwOvSu0iCZT38e3cOi7kmIi/1wPPZb3aEAs='], '0e98e2b6da4f8435': [2, 'HCnC1X4sGb5LQhOF+v+UD6DZ0/a+lXi3RhKcO3w+P8k='], 'd10ac17bfe00c767': [2, 'w7vhGFpjWuwXjEo82+A/c4JyAsYqpNqYTmA//46gLHI='], '8985392bd9c652a9': [2, 'mzQZSH2lzyJhvllffcGj8+sS3XeZoLaPhn2dHx0wcEs='], '03911d549d31f5dc': [2, 'ESA9NzlSaFcRyIfcY0Qk1qxY7l6AAIaU1j6GLggzpwo='], 'b76dfcc2ebfb8d42': [2, 'pdzcoU+YEMl/BMRZQgqWMWS4WBXqVLt9DneT2Wtd4y8='], '361f1ff23c2f0202': [2, 'JK4/kZhMn4kylgkNM7H0efz4oxDXCOsBLBezy/hzW0Q='], 'f9eaed0e2cd0a3f6': [2, '61vNbYizPn3Eej2dpilc4kaJVyQBLIFC3Se94guRM3Q='], 'b3cfba37a16f8f11': [2, 'oX6aVAUMEppCIDHiptLGqwFIRm8Q2FYFCfJrLXiDWII='], '414e0c41d3bb5723': [2, 'U/8sInfYyqhOj8NzvbbJzLrz/sudzCLctyfrBx0tFeo='], 'ebfca0408f3b775e': [2, '+U2AIytY6tVQM0AallVzvRmWqPtyubYKkwhuaD/Lch0='], '3c7b1c13555fbb4f': [2, 'Lso8cPE8JsQt328d0g2fBwTDRZQxf/FGmAuPiKO1vN0='], '3cd81dc133dcb1ec': [2, 'Lmk9ope/LGcJKOKEyMQcbJS5KLlU/4eE3jwka+9RJjE='], 'd2f011c4320a8cd9': [2, 'wEExp5ZpEVKaHwEoEjMnTVmaIRKLgRJ2/iiseqXmcIM='], 'ec54f00a248f6936': [2, '/uXQaYDs9L3n/FWoykHkXAdDjMng15KYWWIYacQpKu0='], 'aae6be9ab9c99b8d': [3, 'AqvvdI5aJDNOxRRsuGyrt8iUQRmwP69ZyCSUCNMzNxg='], '8b0c43753b33842c': [3, 'I0ESmwygO5L2wu0ehTboqP4jVuXqz3gtbYdOZYx1Gy4='], '688c2b8361899d83': [3, 'wMF6bVYaIj1nlbl5tteks02rrjhIbfO/5Vd6NZJ+5is='], 'abc4c78fef0bb9f1': [3, 'A4mWYdiYBk9s4t1tSieFeamUHI57JBn+yKCRsXmazfU='], '4630eddcd5325c4d': [3, '7n28MuKh4/NtOx4R4kFSRGUfe86XTLClqxFlJLA8qVE='], 'e4db86d17774b42a': [3, 'TJbXP0DnC5QpDDPCSV7BsI3Ukvtga90Ith0tDvDilAM='], 'b0d581473cdebf05': [3, 'GJjQqQtNALtC2mxZYAwtApE5MIJgBkx+MSoLHP4zO8Q='], '756cf4dd48f36571': [3, '3SGlM39g2s9jP9m2qUdpDBnEUDQmUmSle8qvlWpqwHw='], '372126bc68776a8d': [3, 'n2x3Ul/k1TPWex4Dds6LCi3ep6+crm1b/baQBS2AKIM='], '5ed0a89c37d261f5': [3, '9p35cgBB3kvDQjr6P0+GnQT4u3m0uTrcP1cZR3/rKlg='], 'd369e618726992b7': [3, 'eyS39kX6LQlhmOE3aTd976SkMIznQ6PEFic1N5v7bi8='], '7500364b5355d189': [3, '3U1npWTGbjcgRfrVzbq63qjZ9R+p3Htwn+f8uJ5Nxts='], '89ef0f3e6f0bd2d1': [3, 'IaJe0FiYbW+dgxzFQn9DsnjlLblABZ8J6iJs04Lot8s='], 'd20a379bca5244ac': [3, 'ekdmdf3B+xIkS5WgW8WEMd/TyqfWOqOOSA0yzH0J9GY='], '268bcebf81526c2a': [3, 'jsafUbbB05TfjY1saWvZO40D7UIgkKcd4dLjW1OwgG4='], 'af1988926900f8cf': [3, 'B1TZfF6TR3EF1H5HL3ATim4GMgi7mN6A9ElOW2O8ygs='], 'b908722fdd3999a9': [3, 'EUUjweqqJhdONj4KUGhAxPjKSwGtfkc2a9LWnKMXTn4='], '6256a77d015fab31': [3, 'yhv2kzbMFI+8Y+JP3OZw/IiMNfVTbCdhAlK/iPQP1SE='], '5106d8ea00317227': [3, '+UuJBDeizZkQ7npmxMeays14fYv9NnsdrhQBxro1iJ4='], '223b6268cd556539': [3, 'inYzhvrG2ofegp0PeG31vF9DiG7BGoRTBm/jKHfNvVE='], '0c3e4d5754f33d66': [3, 'pHMcuWNggthYDsDKQHH0H2orMiyN/4jP5e1GC2Zox6Q='], '1f8217d63caac041': [3, 't89GOAs5f/+400C0bHxEgydN1VyedMNAyhW8aqryvLw='], '97a31a4f1f84ea2b': [3, 'P+5LoSgXVZUwoDMX36fWLuSXNBqCpOVnh7qh7gOznME='], '38936ac19d161068': [3, 'kN47L6qFr9aJKtRMD5Olb4sIRZ8H9MvF4/rCsHEsy3k=']}
+
+def _epitaph_norm(s):
+    s = (s or "").lower()
+    s = _re.sub(r"[^a-z0-9]+", " ", s)
+    return _re.sub(r"\s+", " ", s).strip()
+
+def _epitaph_ks(key, n):
+    out = b""; i = 0
+    while len(out) < n:
+        out += hashlib.sha256(key + i.to_bytes(4, "big")).digest(); i += 1
+    return out[:n]
+
+def _epitaph_open(say):
+    p = _epitaph_norm(say)
+    if not p:
+        return None
+    h = hashlib.sha256(p.encode("utf-8")).digest()
+    rec = _EPITAPH_KEYS.get(h.hex()[:16])
+    if not rec:
+        return None
+    door, wrapped_b64 = rec
+    wrapped = _b64.b64decode(wrapped_b64)
+    ck = bytes(a ^ b for a, b in zip(wrapped, h))
+    blob = _b64.b64decode(_EPITAPH_BLOBS[door])
+    try:
+        return bytes(a ^ b for a, b in zip(blob, _epitaph_ks(ck, len(blob)))).decode("utf-8")
+    except Exception:
+        return None
+
+def _epitaph_esc(s):
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+def _epitaph_page(say):
+    revealed = _epitaph_open(say) if say else None
+    css = ("body{background:#0c0c0d;color:#d8d4cc;font-family:Georgia,'Times New Roman',serif;"
+           "margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;}"
+           ".wrap{max-width:640px;padding:48px 28px;width:100%;box-sizing:border-box;}"
+           "input{background:#151517;border:1px solid #333;color:#e8e4dc;font-family:inherit;"
+           "font-size:18px;padding:10px 12px;width:100%;box-sizing:border-box;}"
+           ".warn{color:#8a8578;font-style:italic;margin-bottom:22px;font-size:16px;}"
+           ".body{white-space:pre-wrap;font-size:18px;line-height:1.55;}"
+           ".foot{color:#565247;font-style:italic;margin-top:26px;font-size:15px;}"
+           ".q{color:#7a766c;margin-bottom:14px;font-size:17px;}"
+           ".no{color:#6b6659;font-style:italic;margin-bottom:16px;}")
+    if revealed is not None:
+        inner = ('<div class="warn">' + _epitaph_esc(_EPITAPH_WARN) + '</div>'
+                 + '<div class="body">' + _epitaph_esc(revealed) + '</div>'
+                 + '<div class="foot">' + _epitaph_esc(_EPITAPH_FOOT) + '</div>')
+    else:
+        note = '<div class="no">The ground stays shut.</div>' if say else ''
+        inner = (note
+                 + '<div class="q">Speak well of the maker.</div>'
+                 + '<form method="get" action="/__epitaph" autocomplete="off">'
+                 + '<input name="say" autofocus /></form>')
+    return ("<!doctype html><html><head><meta charset='utf-8'>"
+            "<meta name='viewport' content='width=device-width,initial-scale=1'>"
+            "<title> </title><style>" + css + "</style></head>"
+            "<body><div class='wrap'>" + inner + "</div></body></html>")
+
+
 def make_handler(root, ann_dir, port_box, state):
     bp_file = os.path.join(ann_dir, "blueprint.json")
     cm_file = os.path.join(ann_dir, "comments.json")
@@ -650,8 +722,19 @@ def make_handler(root, ann_dir, port_box, state):
             return urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
 
         # ---- GET -------------------------------------------------------------
+        def _epitaph(self, say):
+            data = _epitaph_page(say).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+            return
+
         def do_GET(self):
             p = urllib.parse.urlparse(self.path).path
+            if p == "/__epitaph":
+                return self._epitaph(self._q().get("say", [""])[0])
             if p == "/__info":
                 return self._json({"tool": "claude-deckhand",
                                    "root": root, "port": port_box[0]})

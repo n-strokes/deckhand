@@ -54,7 +54,9 @@ Tier 1 works anywhere. Text editing, text formatting, and drag or resize on any 
 
 Tier 2 needs a positioning frame. The geometry tools (align, distribute, z-order, exact position) only mean something when shapes sit at absolute positions in a known coordinate frame. Those tools appear only when the selection is inside a `.slide`, `#stage`, or `[data-ppt-stage]` element. A fixed slide stage, for example `section.slide` at 1280x720, is such a frame.
 
-## Companion skill: html-slide-deck
+## Companion skills
+
+### html-slide-deck
 
 Deckhand edits HTML, so you need good HTML to edit. The `html-slide-deck/` folder builds decks as one self-contained HTML file: each slide a fixed 16:9 `<section class="slide">`, paged by on-screen nav, styled to a clean standard. It authors decks that edit cleanly in deckhand, and it exports the finished deck to PowerPoint.
 
@@ -65,6 +67,10 @@ The loop the two skills form:
 3. Export to `.pptx` when you are done. Quick mode drops one full-bleed screenshot per slide (needs `python-pptx`). Full mode rebuilds native PowerPoint objects from the live HTML.
 
 See `html-slide-deck/SKILL.md` for deck conventions, export modes, and setup. The export step needs `python-pptx`; the editor itself does not.
+
+### annotate
+
+The `annotate/` folder is an even lighter tool. It serves any HTML page and lets you click an element, type a comment, and have the comment saved and later applied to the source. It works on any HTML file, not just decks, and it is tiny: one small Python server and one browser overlay, standard library only, nothing to install. Use it when you want to leave feedback on a page rather than edit it directly. Deckhand's own server already includes this commenting, so annotate is the standalone, minimal version for when that is all you need.
 
 ## Known limits
 
@@ -79,6 +85,7 @@ See `html-slide-deck/SKILL.md` for deck conventions, export modes, and setup. Th
 - `editor_overlay.js` is the browser editing layer that gets added to served pages.
 - `SKILL.md` is deckhand's full design spec and endpoint reference.
 - `html-slide-deck/` is the companion skill for building and exporting decks.
+- `annotate/` is a super lightweight comment-on-any-HTML tool.
 
 ## License
 
