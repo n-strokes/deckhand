@@ -178,6 +178,17 @@ paper trail. This is the only case where Claude writes the file directly.
   `POST /__done {id,note}` (Claude) · `POST /__clear?mode=done|all`.
 
 ## Notes & knobs
+- **The overlay owns the `__ann-` namespace, and nothing else.** It is injected into somebody
+  else's page, so every id and class it creates is prefixed: `__ann-list`, `__ann-tog`,
+  `__ann-body`, `__ann-count`, `__ann-collapse`, `__ann-copy`, `__ann-clear`, `__ann-wipe`,
+  `__ann-close`, `.__ann-box`, `.__ann-input`. It also looks its own elements up inside its own
+  bar and panel rather than searching the whole document. Both halves matter, and the reason is
+  a real bug: the ids used to be bare (`annlist`, `anntog`, `annc`), a page turned up with its
+  own `id="annlist"` for an unrelated list, and `document.getElementById` returned whichever
+  came first in the DOM. Clicking that page's list opened the comment panel. If you add an
+  element here, prefix it and scope the lookup. The only document-wide lookups that belong in
+  this file are the two that find the *user's* element from a comment's `selector` and
+  `nearest_id`.
 - **Free-port scan.** With no `--port`, the server binds the first free port from 8800 upward.
   Pass `--port N` to force one.
 - **One server per project, many pages.** Every comment carries a `page` field, so annotating

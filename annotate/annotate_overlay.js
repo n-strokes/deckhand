@@ -9,12 +9,12 @@
     'font:14px/1.4 system-ui,sans-serif;background:#111;color:#fff;border-radius:10px;' +
     'padding:10px 12px;box-shadow:0 4px 16px rgba(0,0,0,.3);user-select:none';
   bar.innerHTML =
-    '<a href="#" id="anncollapse" title="collapse" style="color:#7cf;text-decoration:none;' +
+    '<a href="#" id="__ann-collapse" title="collapse" style="color:#7cf;text-decoration:none;' +
     'font-weight:700;font-size:16px;margin-right:8px;vertical-align:-1px">&rsaquo;</a>' +
     '<b>Annotate</b>' +
-    '<span id="annbody"> <span id="annc">0</span> open &middot; ' +
-    '<a href="#" id="anntog" style="color:#7cf;text-decoration:none">off</a> &middot; ' +
-    '<a href="#" id="annlist" style="color:#7cf;text-decoration:none">list</a></span>';
+    '<span id="__ann-body"> <span id="__ann-count">0</span> open &middot; ' +
+    '<a href="#" id="__ann-tog" style="color:#7cf;text-decoration:none">off</a> &middot; ' +
+    '<a href="#" id="__ann-list" style="color:#7cf;text-decoration:none">list</a></span>';
   document.body.appendChild(bar);
 
   var hi = document.createElement('div');
@@ -69,17 +69,17 @@
 
   // ---- comment manager panel (the "list" pop-up) -------------------------
   var panel = document.createElement('div');
-  panel.className = 'ann-box';
+  panel.className = '__ann-box';
   panel.style.cssText = 'position:fixed;z-index:2147483647;bottom:60px;right:16px;display:none;' +
     'width:360px;max-height:60vh;overflow:auto;background:#fff;color:#111;border:1px solid #ccc;' +
     'border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.3);font:13px/1.4 system-ui,sans-serif;padding:8px';
   document.body.appendChild(panel);
 
-  function setCount(n) { document.getElementById('annc').textContent = n; }
+  function setCount(n) { bar.querySelector('#__ann-count').textContent = n; }
 
   function setOn(v) {
     ON = v;
-    var t = document.getElementById('anntog');
+    var t = bar.querySelector('#__ann-tog');
     if (t) t.textContent = ON ? 'ON' : 'off';
     hi.style.display = 'none';
     placeSel(); // ON hides the list-selection box; off restores it
@@ -89,8 +89,8 @@
   var collapsed = false;
   function setCollapsed(v) {
     collapsed = v;
-    document.getElementById('annbody').style.display = v ? 'none' : '';
-    var c = document.getElementById('anncollapse');
+    bar.querySelector('#__ann-body').style.display = v ? 'none' : '';
+    var c = bar.querySelector('#__ann-collapse');
     c.innerHTML = v ? '&lsaquo;' : '&rsaquo;';
     c.title = v ? 'expand' : 'collapse';
     if (v) closePanel();
@@ -118,7 +118,7 @@
   function inOverlay(el) {
     if (!el) return false;
     if (el === bar || bar.contains(el) || el === hi) return true;
-    return !!(el.closest && el.closest('.ann-box'));
+    return !!(el.closest && el.closest('.__ann-box'));
   }
 
   function esc(s) {
@@ -146,7 +146,7 @@
 
   function openBox(el, x, y) {
     var box = document.createElement('div');
-    box.className = 'ann-box ann-input';
+    box.className = '__ann-box __ann-input';
     box.style.cssText = 'position:fixed;z-index:2147483647;left:' +
       Math.min(x, innerWidth - 300) + 'px;top:' + Math.min(y, innerHeight - 140) + 'px;' +
       'background:#fff;color:#111;border:1px solid #ccc;border-radius:8px;padding:8px;' +
@@ -223,7 +223,7 @@
   // 5. annotation is ON -> turn it off
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
-    var inputBox = document.querySelector('.ann-input');
+    var inputBox = document.querySelector('.__ann-input');
     if (inputBox) { e.preventDefault(); e.stopPropagation(); inputBox.remove(); return; }
     if (panel.style.display !== 'none' && panel.querySelector('textarea')) return;
     if (panel.style.display !== 'none' && selId != null) {
@@ -245,7 +245,7 @@
   function annInputFocused() {
     var ae = document.activeElement;
     if (!ae || (ae.tagName !== 'TEXTAREA' && ae.tagName !== 'INPUT')) return false;
-    return !!(ae.closest && ae.closest('.ann-box'));
+    return !!(ae.closest && ae.closest('.__ann-box'));
   }
   function shieldKey(e) {
     if (!annInputFocused()) return;
@@ -265,27 +265,27 @@
       'padding:2px 4px 8px;border-bottom:1px solid #eee;margin-bottom:6px">' +
       '<b>Comments (' + total + ')</b>' +
       '<span style="font-size:12px;white-space:nowrap">' +
-      '<a href="#" id="anncopy" style="color:#06c;text-decoration:none;margin-left:10px">copy</a>' +
-      '<a href="#" id="annclear" style="color:#06c;text-decoration:none;margin-left:10px">clear done</a>' +
-      '<a href="#" id="annwipe" style="color:#c33;text-decoration:none;margin-left:10px">wipe</a>' +
-      '<a href="#" id="annclose" style="color:#888;text-decoration:none;margin-left:10px">close</a>' +
+      '<a href="#" id="__ann-copy" style="color:#06c;text-decoration:none;margin-left:10px">copy</a>' +
+      '<a href="#" id="__ann-clear" style="color:#06c;text-decoration:none;margin-left:10px">clear done</a>' +
+      '<a href="#" id="__ann-wipe" style="color:#c33;text-decoration:none;margin-left:10px">wipe</a>' +
+      '<a href="#" id="__ann-close" style="color:#888;text-decoration:none;margin-left:10px">close</a>' +
       '</span></div>';
   }
   function wireHeader() {
-    panel.querySelector('#annclose').onclick = function (e) { e.preventDefault(); closePanel(); };
-    panel.querySelector('#annclear').onclick = function (e) {
+    panel.querySelector('#__ann-close').onclick = function (e) { e.preventDefault(); closePanel(); };
+    panel.querySelector('#__ann-clear').onclick = function (e) {
       e.preventDefault();
       fetch('/__clear?mode=done', { method: 'POST' })
         .then(function (r) { return r.json(); })
         .then(function (d) { setCount(d.count); renderList(); });
     };
-    panel.querySelector('#annwipe').onclick = function (e) {
+    panel.querySelector('#__ann-wipe').onclick = function (e) {
       e.preventDefault();
       if (!confirm('Wipe ALL comments (open + done)?')) return;
       fetch('/__clear?mode=all', { method: 'POST' })
         .then(function () { setCount(0); renderList(); });
     };
-    panel.querySelector('#anncopy').onclick = function (e) {
+    panel.querySelector('#__ann-copy').onclick = function (e) {
       e.preventDefault();
       var link = e.target;
       fetch('/__comments').then(function (r) { return r.json(); }).then(function (d) {
@@ -498,16 +498,16 @@
     });
   }
 
-  document.getElementById('annlist').onclick = function (e) {
+  bar.querySelector('#__ann-list').onclick = function (e) {
     e.preventDefault();
     if (panel.style.display === 'none') { panel.style.display = 'block'; renderList(); }
     else { closePanel(); }
   };
 
-  document.getElementById('anntog').onclick = function (e) {
+  bar.querySelector('#__ann-tog').onclick = function (e) {
     e.preventDefault(); setOn(!ON);
   };
-  document.getElementById('anncollapse').onclick = function (e) {
+  bar.querySelector('#__ann-collapse').onclick = function (e) {
     e.preventDefault(); setCollapsed(!collapsed);
   };
 
